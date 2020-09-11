@@ -1,68 +1,61 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# React CKEditor5 Eject
 
-## Available Scripts
+This is an application created by the [`create-react-app`](https://github.com/facebook/create-react-app) tool.
 
-In the project directory, you can run:
+The repository contains configuration for all tools (webpack, Jest, etc.) because I called `yarn run eject` after creating the project.
 
-### `yarn start`
+The application integrates [CKEditor 5](https://github.com/ckeditor/ckeditor5) with React using the [`@ckeditor/ckeditor5-react`](https://github.com/ckeditor/ckeditor5-react) package.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+See the ["Rich text editor component for React"](https://ckeditor.com/docs/ckeditor5/latest/builds/guides/integration/frameworks/react.html) guide in the [CKEditor 5 documentation](https://ckeditor.com/docs/ckeditor5/latest) to learn more.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+## Development
 
-### `yarn test`
+The repository uses [`yarn`](https://yarnpkg.com/) as the package manager.
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+After cloning the repository, install required dependencies: `yarn install`.
 
-### `yarn build`
+### Starting the web-server
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Call: `yarn run start`.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+### Prepare the production build
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Call: `yarn run build`.
 
-### `yarn eject`
+You can use [`http-server`](https://www.npmjs.com/package/http-server) for verifying whether the application works: `http-server build/`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+### Testing
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+⚠️ The Jest configuration (located in the `package.json` file) requires cloning one of the test utils from CKEditor 5 repository. [Read more why it is needed.](https://github.com/ckeditor/ckeditor5-react/issues/225)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+# Prepare the test's utils directory in the @ckeditor/ckeditor5-core package.
+mkdir -p node_modules/@ckeditor/ckeditor5-core/tests/_utils/
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+# Get the VirtualTestEditor that we will use for testing.
+wget https://raw.githubusercontent.com/ckeditor/ckeditor5/v26.0.0/packages/ckeditor5-core/tests/_utils/virtualtesteditor.js
 
-## Learn More
+# Move the editor file to the proper location.
+mv virtualtesteditor.js node_modules/@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.js
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Call: `yarn run test`
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+If you see an error:
 
-### Code Splitting
+```
+Configuration error:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+Could not locate module @ckeditor/ckeditor5-editor-classic/src/classiceditor mapped as:
+/Users/pomek/Projects/pomek/react-ckeditor5-eject/node_modules/@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor.
 
-### Analyzing the Bundle Size
+Please check your configuration for these entries:
+{
+  "moduleNameMapper": {
+    "/classiceditor/": "/Users/pomek/Projects/pomek/react-ckeditor5-eject/node_modules/@ckeditor/ckeditor5-core/tests/_utils/virtualtesteditor"
+  },
+  "resolver": null
+}
+```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+The `VirtualTestEditor` is not saved in the proper localization.
